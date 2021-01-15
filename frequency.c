@@ -15,14 +15,16 @@ int main(int argc, char *argv[])
     struct Trie* head = newTrieNode(NULL);
     if (head == NULL){
         free_node(head);
-        ///exist!
+        return -1;
     }
     char str[LONGEST_WORD];
     int len = 0;
     while ((len = getWord(words)) != -1){
         memcpy(str, words, len);
         str[len] = 0;
-        insert(head, str);   
+        if (insert(head, str) == -1){
+            return -1;
+        }   
     }
     if (argc ==1){
         printWords(head);
@@ -82,13 +84,13 @@ int getWord(char word[]){
     return len;
 }
 
-void insert(struct Trie *head, char* str)
+int insert(struct Trie *head, char* str)
 {
     // start from root node
     struct Trie* curr = head;
     char *str_start = str;
     int i = 0;
-    if (!*str) return;      // when str is null
+    if (!*str) return 0;      // when str is null
     while (*str)
     {
         // create a new node if path doesn't exists
@@ -96,7 +98,7 @@ void insert(struct Trie *head, char* str)
             curr->character[*str - 'a'] = newTrieNode(curr);
             if (curr->character[*str - 'a'] == NULL){
                 free_TRIE(head);
-                ///exist!
+                return -1;
             }
         }
  
@@ -111,6 +113,7 @@ void insert(struct Trie *head, char* str)
     prev->isWord = 1;
     prev->count += 1;
     memcpy(prev->word, str_start, i);
+    return 0;
 
 }
 
